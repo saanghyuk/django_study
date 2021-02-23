@@ -1,8 +1,40 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Fcuser
 from django.http import HttpResponse
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
+from .forms import LoginForm
 # Create your views here.
+
+def home(request):
+  user_id = request.session.get('user')
+  if user_id :
+    fcuser = Fcuser.objects.get(pk=user_id)
+    return HttpResponse(fcuser.username)
+  return HttpResponse('Home')
+
+
+def logout(request):
+  if request.session.get('user'):
+    del(request.session['user'])
+
+  return redirect('/')
+
+
+def login(request):
+    if request.method =='POST':
+      form = LoginForm(request.POST)
+      if form.is_valid(): #valid(값이 들어있는지 아닌지 판단)하지 않으면, form.error로 error가 들어감
+        #session code
+        request.session['user']=form.user_id
+
+        return redirect('/')
+
+    else:
+      form = LoginForm()
+
+    return render(request, 'login.html', {'form':form})
+
+
 
 def register(request):
   if request.method == 'GET':
