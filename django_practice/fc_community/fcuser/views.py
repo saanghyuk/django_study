@@ -29,6 +29,8 @@ def login(request):
 
         return redirect('/')
 
+
+
     else:
       form = LoginForm()
 

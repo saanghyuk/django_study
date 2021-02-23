@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import check_password
 
 class LoginForm(forms.Form):
   username = forms.CharField(max_length=32, label="사용자 이름", error_messages={'required': '아이디를 입력해 주세요'})
-  password = forms.CharField(widget=forms.PasswordInput, label = "비밀번호", error_messages={'required': '비밀번호를 입력해 주세요'}  )
+  password = forms.CharField(widget=forms.PasswordInput, label = "비밀번호", error_messages={'required': '비밀번호를 입력해 주세요'})
 
   def clean(self): #is_valid를 호출하면 자동으로 호출됨.
     cleaned_data = super().clean()
