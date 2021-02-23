@@ -2,15 +2,15 @@ from django.shortcuts import render, redirect
 from .models import Fcuser
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
-from .forms import LoginForm
+from .forms import LoginForm, RegisterForm
 # Create your views here.
 
 def home(request):
   user_id = request.session.get('user')
   if user_id :
     fcuser = Fcuser.objects.get(pk=user_id)
-    return HttpResponse(fcuser.username)
-  return HttpResponse('Home')
+    return HttpResponse(fcuser.username+'님 안녕하세요!')
+  return HttpResponse('Home님 ')
 
 
 def logout(request):
@@ -26,11 +26,7 @@ def login(request):
       if form.is_valid(): #valid(값이 들어있는지 아닌지 판단)하지 않으면, form.error로 error가 들어감
         #session code
         request.session['user']=form.user_id
-
         return redirect('/')
-
-
-
     else:
       form = LoginForm()
 
@@ -39,27 +35,32 @@ def login(request):
 
 
 def register(request):
-  if request.method == 'GET':
-    return render(request, 'register.html')
+  if request.method =='POST':
+    form = RegisterForm(request.POST)
+    error=""
+    if form.is_valid():
+      username = request.POST.get('username', None)
+      useremail = request.POST.get('useremail', None)
+      password = request.POST.get('password', None)
+      re_password = request.POST.get('re_password', None)
 
-  elif request.method =='POST':
-    username = request.POST.get('username', None)
-    useremail = request.POST.get('useremail', None)
-    password = request.POST.get('password', None)
-    re_password = request.POST.get('re-password', None)
+      # if not (username and useremail and password and re_password):
+        # error = '모든 항목을 입력해주세요.'
+      if password != re_password:
+        error = '비밀번호가 서로 다릅니다.'
+      else:
+        fcuser = Fcuser(
+          username = username,
+          password = make_password(password),
+          useremail = useremail
+        )
+        fcuser.save()
+        request.session['user']=fcuser.id
 
-    res_data = {}
-    if not (username and useremail and password and re_password):
-      res_data['error'] = '모든 항목을 입력해주세요.'
-    elif password != re_password:
-      res_data['error'] = '비밀번호가 다릅니다.'
-    else:
-      fcuser = Fcuser(
-        username = username,
-        password = make_password(password),
-        useremail = useremail
-      )
-      fcuser.save()
+        return redirect('/')
 
-    return render(request, 'register.html', res_data)
+    return render(request, 'register.html', {'form':form, 'error':error})
 
+  else:
+      form = RegisterForm()
+      return render(request, 'register.html', {'form':form} )
