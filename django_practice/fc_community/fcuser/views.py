@@ -17,10 +17,12 @@ def logout(request):
   if request.session.get('user'):
     del(request.session['user'])
 
-  return redirect('/')
+  return redirect('/fcuser/login')
 
 
 def login(request):
+    if request.session.get('user'):
+      return redirect('/')
     if request.method =='POST':
       form = LoginForm(request.POST)
       if form.is_valid(): #valid(값이 들어있는지 아닌지 판단)하지 않으면, form.error로 error가 들어감
@@ -35,6 +37,8 @@ def login(request):
 
 
 def register(request):
+  if request.session.get('user'):
+      return redirect('/')
   if request.method =='POST':
     form = RegisterForm(request.POST)
     error=""
