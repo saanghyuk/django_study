@@ -10,7 +10,7 @@ def home(request):
   if user_id :
     fcuser = Fcuser.objects.get(pk=user_id)
     return HttpResponse(fcuser.username+'님 안녕하세요!')
-  return HttpResponse('Home님 ')
+  return HttpResponse('Home님')
 
 
 def logout(request):
