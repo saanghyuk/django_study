@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+<!-- 이걸 쓰면 여러 필터 사용 가능 단, app에서 활성화 해야 함-->
+{% load humanize %}
+{% block contents %}
+<div class="row mt-5">
+  <table class="table table-light">
+    <thead class='thead-light'>
+      <tr>
+        <th scope='col'>#</th>
+        <th scope='col'>상품명</th>
+        <th scope='col'>가격</th>
+        <th scope='col'>등록날짜</th>
+      </tr>
+    </thead>
+    <tbody class="text-dark">
+      {% for product in product_list %}
+      <tr>
+        <th scope='row'>{{ product.id }}</th>
+        <th scope='row'>{{ product.name }}</th>
+        <th scope='row'>{{ product.price|intcomma }}원</th>
+        <th scope='row'>{{ product.register_date|date:'Y-m-d H:i' }}</th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+{% endfor %}
+{% endblock %}
