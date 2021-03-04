@@ -13,7 +13,7 @@
           <form method='POST' action="/order/create/">
           {% csrf_token %}
           {% for field in form %}
-          <div class="form-group">
+          <div class="forsm-group">
             {% ifnotequal field.name 'product' %}
             <label for="{{ field.id_for_labels }}">{{ field.label }}</label>
             {% endifnotequal %}
@@ -21,7 +21,6 @@
           </div>
           {% if field.errors %}
           <span style="color: red">{{ field.errors }}</span>
-          error occurs
           {% endif %}
           {% endfor %}
           <button type="submit" class="btn btn-primary mt-3">주문하기</button>
@@ -29,6 +28,9 @@
         </li>
         <li class="list-group-item">
           가격 : {{ product.price|intcomma }}
+        </li>
+        <li class="list-group-item">
+          재고 : {{ product.stock|intcomma }}
         </li>
         <li class="list-group-item">
           등록날짜: {{ product.register_date|date:'Y-m-d H:i' }}

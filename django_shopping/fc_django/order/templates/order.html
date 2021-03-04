@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+<!-- 이걸 쓰면 여러 필터 사용 가능 단, app에서 활성화 해야 함-->
+{% load humanize %}
+{% block contents %}
+<div class="row mt-5">
+  <table class="table table-light">
+    <thead class='thead-light'>
+      <tr>
+        <th scope='col'>#</th>
+        <th scope='col'>상품명</th>
+        <th scope='col'>수량</th>
+        <th scope='col'>주문날짜</th>
+      </tr>
+    </thead>
+    <tbody class="text-dark">
+      {% for order in order_list %}
+      <tr>
+        <td scope='row'>{{ order.id }}</td>
+        <td scope='row'>{{ order.product }}</td>
+        <td scope='row'>{{ order.quantity|intcomma }}개</td>
+        <td scope='row'>{{ order.register_date|date:'Y-m-d H:i' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endblock %}
