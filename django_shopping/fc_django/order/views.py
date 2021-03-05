@@ -4,9 +4,14 @@ from django.views.generic import ListView
 from .forms import RegisterForm
 from product.models import Product
 from .models import Order
+from django.db import transaction
+
+from fcuser.models import Fcuser
+from product.models import Product
 
 from django.utils.decorators import method_decorator
 from fcuser.decorators import login_required
+
 # Create your views here.
 
 
@@ -16,6 +21,20 @@ class OrderCreate(FormView):
     # 필요가 없음. 화면을 보여주는 용도로 쓰는게 아니기 때문
     form_class = RegisterForm
     success_url = '/product/'
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            prod = Product.objects.get(pk=form.data.get('product'))
+            order = Order(
+                quantity=form.data.get('quantity'),
+                product=prod,
+                fcuser=Fcuser.objects.get(
+                    email=self.request.session.get('user'))
+            )
+            order.save()
+            prod.stock -= int(form.data.get('quantity'))
+            prod.save()
+        return super().form_valid(form)
 
     def form_invalid(self, form):
         # return redirect('/product/'+str(form.product))
