@@ -1,6 +1,26 @@
 {% extends "base.html" %}
 <!-- 이걸 쓰면 여러 필터 사용 가능 단, app에서 활성화 해야 함-->
 {% load humanize %}
+{% block header %}
+<script>
+function product_detail(id){
+  $.ajax({
+    url:"/api/product/"+id,
+    success: function (result) {
+      $("#product-"+id).popover({
+        html:true,
+        content: result.name+"<br>"+result.price
+      }).popover("show")
+    }
+  })
+}
+function product_leave(id){
+  $("#product-"+id).popover('hide')
+}
+$(document).ready(function (){})
+
+</script>
+{% endblock %}
 {% block contents %}
 <div class="row mt-5">
   <table class="table table-light">
@@ -16,7 +36,8 @@
       {% for product in product_list %}
       <tr>
         <td scope='row'>{{ product.id }}</td>
-        <td scope='row'><a href="/product/{{ product.id }}">{{ product.name }}</a></td>
+        <td scope='row'><a id="product-{{product.id}}" onmouseenter="product_detail({{ product.id}});" onmouseleave="product_leave({{ product.id }})"
+          href="/product/{{ product.id }}">{{ product.name }}</a></td>
         <td scope='row'>{{ product.price|intcomma }}원</td>
         <td scope='row'>{{ product.register_date|date:'Y-m-d H:i' }}</td>
       </tr>
