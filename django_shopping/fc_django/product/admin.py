@@ -14,8 +14,14 @@ class ProductAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context)
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
-        product = Product.objects.get(pk=object_id)
-        extra_context = {'title': f'{product.name} 상품 수정하기'}
+        try:
+            product = Product.objects.get(pk=object_id)
+            extra_context = {'title': f'{product.name} 상품 수정하기'}
+            extra_context['show_save_and_add_another'] = False
+            extra_context['show_save_and_continue'] = False
+        except:
+            pass
+
         return super().changeform_view(request, object_id, form_url, extra_context)
 
     def price_format(self, obj):

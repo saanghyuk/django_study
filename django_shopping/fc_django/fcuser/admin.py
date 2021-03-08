@@ -12,8 +12,11 @@ class FcuserAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context)
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
-        fcuser = Fcuser.objects.get(pk=object_id)
-        extra_context = {'title': f'{fcuser.email} 수정하기'}
+        try:
+            fcuser = Fcuser.objects.get(pk=object_id)
+            extra_context = {'title': f'{fcuser.email} 수정하기'}
+        except:
+            pass
         return super().changeform_view(request, object_id, form_url, extra_context)
 
 

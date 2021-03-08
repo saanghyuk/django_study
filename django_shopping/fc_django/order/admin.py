@@ -42,7 +42,6 @@ orderComplete.short_description = '결제완료'
 def refund(modeladmin, request, queryset):
     # query셋에는 체크한 애들이 들어옴, 일괄적으로 쓸때만 이렇게 하는 것 같음.
     # queryset.update(obj.product.stock += obj.quantity)
-
     with transaction.atomic():
         qs = queryset.filter(~Q(status='환불'))
 
@@ -72,6 +71,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('fcuser', 'product', 'styled_status', 'action')
     change_list_template = 'admin/order_change_list.html'
     change_form_template = 'admin/order_change_form.html'
+    # add_form_template = 'admin/order_add_form.html'
     actions = [
         refund,
         orderComplete
@@ -80,6 +80,15 @@ class OrderAdmin(admin.ModelAdmin):
     def action(self, obj):
         if obj.status != '환불':
             return format_html(f'<input type="button" value="환불" onclick="order_refund_submit({obj.id})" class="btn btn-primary btn-sm">')
+
+    def add_view(self, request, extra_context=None):
+        # if request.user.is_superuser:
+        extra_context = extra_context or {}
+        extra_context['show_save_and_continue'] = False
+        extra_context['show_save_and_add_another'] = False
+        # extra_context['show_save'] = False
+        # extra_context['show_delete'] = False
+        return super(OrderAdmin, self).add_view(request, extra_context=extra_context)
 
     def changelist_view(self, request, extra_context=None):
         # 우리가 원하는 동작
@@ -109,11 +118,14 @@ class OrderAdmin(admin.ModelAdmin):
         return super().changelist_view(request, extra_context)
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
-        order = Order.objects.get(pk=object_id)
-        extra_context = {
-            'title': f"'{order.fcuser.email}'님의 '{order.product.name}' 주문"}
-        extra_context['show_save_and_add_another'] = False
-        extra_context['show_save_and_continue'] = False
+        try:
+            order = Order.objects.get(pk=object_id)
+            extra_context = {
+                'title': f"'{order.fcuser.email}'님의 '{order.product.name}' 주문"}
+            extra_context['show_save_and_add_another'] = False
+            extra_context['show_save_and_continue'] = False
+        except:
+            pass
 
         return super().changeform_view(request, object_id, form_url, extra_context)
 
