@@ -27,11 +27,21 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BATON = {
+    'SITE_HEADER': '고려화학매트 백오피스',
+    'SITE_TITLE': '고려화학매트 백오피스',
+    'INDEX_TITLE': '관리자페이지',
+    'SUPPORT_HREF': 'mailto:customer-centric@kormat.co.kr',
+    'COPYRIGHT': 'copyright © 2020 SANGHYUK SON',
+    'POWERED_BY': "<a href='https://kormat.co.kr'>KORMAT</a>",
+    '메뉴타이틀': '해은이'
+}
 
 # Application definition
-
 INSTALLED_APPS = [
+    'baton',
     'django.contrib.admin',
+    # 'django.contrib.sites',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -39,9 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'rest_framework',
-    'fcuser',
-    'order',
-    'product'
+    'fcuser.apps.FcuserConfig',
+    'order.apps.OrderConfig',
+    'product.apps.ProductConfig',
+    'baton.autodiscover'
 ]
 
 MIDDLEWARE = [
@@ -108,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
