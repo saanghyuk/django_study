@@ -1,0 +1,21 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n admin_urls static admin_list %}
+{% block content %}
+<div class="p-5">
+
+<h3>
+  로그인 방법
+</h3>
+<ol>
+  <li>아이디와 비밀번호를 입력</li>
+  <li>로그인을 클릭</li>
+</ol>
+<h3>
+  주의사항
+</h3>
+<ol>
+  <li>관리자 계정 생성 시 django 기본 APP의 권한을 부여하지 않는다</li>
+  <li>로그인을 클릭</li>
+</ol>
+</div>
+{% endblock %}

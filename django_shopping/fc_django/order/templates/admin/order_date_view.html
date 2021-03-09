@@ -11,8 +11,10 @@
 
 
 {% block content %}
-  <div id="content-main">
-    <table>
+  <div id="content-main" class='p-5'>
+    <a class='btn btn-primary mb-5' href="/admin/order/order/">돌아가기</a>
+    <h3>최근 일주일 주문</h3>
+    <table class='table'>
       <thead>
         <tr>
           <th>사용자</th>
@@ -32,8 +34,8 @@
         {% endfor %}
       </tbody>
     </table>
-
-    <table>
+    <h3>과거 주문</h3>
+    <table class='table'>
       <thead>
         <tr>
           <th>사용자</th>
