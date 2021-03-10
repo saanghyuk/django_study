@@ -14,6 +14,9 @@ from django.db import transaction
 # Register your models here.
 
 
+# 데이터 끼워넣는 다른 방법
+
+
 def orderComplete(modeladmin, request, queryset):
     with transaction.atomic():
         qs = queryset.filter(~Q(status='결제완료'))

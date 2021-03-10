@@ -34,7 +34,41 @@ BATON = {
     'SUPPORT_HREF': 'mailto:customer-centric@kormat.co.kr',
     'COPYRIGHT': 'copyright © 2020 SANGHYUK SON',
     'POWERED_BY': "<a href='https://kormat.co.kr'>KORMAT</a>",
-    '메뉴타이틀': '해은이'
+    '메뉴타이틀': '해은이',
+    'MENU': (
+        {'type': 'title', 'label': 'MAIN', 'apps': (
+            'auth', 'fcuser', 'order', 'product')},
+        {
+            'type': 'app',
+            'name': 'fcuser',
+            'label': '사용자',
+            'icon': 'fa fa-acorn',
+            'models': (
+                {
+                    'name': 'fcuser',
+                    'label': '사용자'
+                },
+            )
+        },
+        {'type': 'free', 'label': '주문', 'default_open': True, 'children': [
+            {'type': 'model', 'label': '주문',
+                'name': 'order', 'app': 'order'},
+            {'type': 'free', 'label': 'DATE VIEW',
+                'url': '/admin/order/order/date_view'},
+        ]},
+        {
+            'type': 'app',
+            'name': 'product',
+            'label': '상품',
+            'models': (
+                {
+                    'name': 'fcuser',
+                    'label': '상품'
+                },
+            )
+        },
+        {'type': 'free', 'label': '메뉴얼', 'url': '/admin/manual'}
+    ),
 }
 
 # Application definition
