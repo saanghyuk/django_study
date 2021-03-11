@@ -33,6 +33,7 @@ temp=list(a.keys())
 print(temp[0])
 print(a.values())
 
+print('items')
 print(a.items())
 print(list(a.items()))
 print(1 in b) # Key를 찾는 것.
@@ -42,11 +43,11 @@ print('name' in b)
 a=set()
 b=set([1, 2, 3, 4])
 c=set([1, 4, 5, 6, 6])
-print(c) #나는 1, 4, 5, 6, 6 을 넣었는데, 1, 4, 6, 6만 나옴. 집합이기 때문.
+print(c) #나는 1, 4, 5, 6, 6 을 넣었는데, 1, 4, 5, 6만 나옴. 집합이기 때문.
 t=tuple(b)
 print(t)
 l = list(b)
-print(b)
+print(l)
 
 s1=set([1, 2, 3, 4, 5, 6])
 s2=set([4, 5, 6, 7, 8, 9])

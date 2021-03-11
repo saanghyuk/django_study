@@ -6,7 +6,7 @@ a=[]
 b=list()
 c=[1, 2, 3, 4]
 d=[10, 100, 'Pen', 'Banana', 'Orange']
-e=[10, 100, 'Pen', 'Banana', 'Orange', ['Apple', 'Banana']]
+e=[10, 100, ' Pen', 'Banana', 'Orange', ['Apple', 'Banana']]
 
 #인덱싱
 print(d[3])
@@ -45,6 +45,8 @@ y=[5, 2, 3, 1, 4]
 print(y)
 y.append(6)
 print(y)
+
+print("sort")
 y.sort()
 print(y)
 y.reverse()
@@ -98,6 +100,4 @@ print("------")
 
 print(y.index(3))
 print(y.count(3))
-
-
 

@@ -25,6 +25,7 @@ print(str("30"))
 print('Niceman'[-3:])
 q='Niceman'
 q5_index=q.index("man")
+print("q5_index")
 print(q5_index)
 print(q[q5_index:q5_index+3])
 
@@ -39,7 +40,7 @@ print("010-7777-9999"[0:3]+"010-7777-9999"[4:8]+"010-7777-9999"[9:13])
 #정규표현식
 import re
 q7="010-7777-9999"
-print("7. ", re.sub('[^0-9]', '', ))
+print("7. ", re.sub('[^0-9]', '', q7))
 
 # 8. 다음 문자열(URL)에서 "http://" 부분을 제거 후 출력하세요. : "http://daum.net"
 print("http://daum.net".replace("http://",''))
