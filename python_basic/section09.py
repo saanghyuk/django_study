@@ -8,9 +8,8 @@
 f = open('./resource/review.txt', 'r')
 content = f.read()
 print(content)
+print("-------------dir----------------")
 print(dir(f)) # what is f doing?
-
-
 #close 필수. 안닫으면 반드시 언젠가 예외 발생
 f.close()
 
@@ -27,8 +26,10 @@ print("--------------------------")
 
 
 #example 3
+print("EXAMPLE 3")
 with open('./resource/review.txt', 'r') as f:
-  for c in f: # already iterable
+  for c in f: # already iterable 줄마다 iter을 도네.
+    print(c)
     print(c.strip())
 print("--------------------------")
 print("--------------------------")
@@ -47,10 +48,12 @@ print("--------------------------")
 
 
 #example 5
+print("#example 5")
 with open('./resource/review.txt', 'r') as f:
   line = f.readline()
+  print(line)
   while line:
-    print(line, end=' ')
+    print(line, end='=====')
     line = f.readline()
 
 print("--------------------------")
@@ -83,6 +86,7 @@ print("--------------------------")
 score = []
 with open('./resource/score.txt', 'r') as f:
   for line in f:
+    print(line)
     score.append(int(line))
   print(score)
 print('Average : {:6.3}'.format(sum(score)/len(score)))
@@ -111,9 +115,12 @@ with open('./resource/text2.txt', 'w') as f:
 #example 4
 #write lines : list to file
 with open('./resource/text3.txt', 'w') as f:
-  list = ['Kim\n', ,'Park\n', 'Son\n']
+  list = ['Kim\n', 'Park\n', 'Son\n']
   f.writelines(list)
 
+# with open('./resource/text3_1.txt', 'w') as f:
+#   list = ['Kim\n', 'Park\n', 'Son\n']
+#   f.write(list) 리스트는 쓸 수가 없음.
 
 
 

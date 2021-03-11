@@ -24,9 +24,9 @@ class BmwCar(Car):
   def __init__(self, car_name, type, color):
       super().__init__(type, color) #부모한테 넘겨주기
       self.car_name = car_name
+      print("Your Car Name: %s" % self.car_name)
   def show_model(self):
-    return "Your Car Name: %s" % self.car_name
-
+      return "Your Car Name: %s" % self.car_name
 
 #자식 class 내부에서 부모 CALl할때는 super().function()으로 호출하면 됨.
 class BenzCar(Car):
@@ -35,12 +35,11 @@ class BenzCar(Car):
       super().__init__(type, color) #부모한테 넘겨주기
       self.car_name = car_name
   def show_model(self):
-    return "Your Car Name: %s" % self.car_name
-
+      return "Your Car Name: %s" % self.car_name
   def show(self): #Overriding, 부모한테 있는 메소드를 써놓으면 덮어쓰기가 되는 것.
-    print(self.type)
-    print(super().show()) #부모에 있던거 한번 호출 하고.
-    return 'Car Info : %s %s %s' % (self.car_name, self.type, self.color)
+      print(self.type)
+      print(super().show()) #부모에 있던거 한번 호출 하고.
+      return 'Car Info : %s %s %s' % (self.car_name, self.type, self.color)
 
 #일반 사용
 model1 = BmwCar('520d', 'sedan', 'red')

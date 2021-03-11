@@ -24,6 +24,8 @@ user1=UserInfo("손상혁")
 user1.user_info_p("쿠키")
 user2 = UserInfo("Park")
 user2.user_info_p("Pizza")
+print("__dict__")
+#Class 변수 check
 print(user1.__dict__)
 print(user2.__dict__)
 
@@ -48,6 +50,9 @@ self_test = SelfTest()
 # self가 들어있어야 현재 객체의 함수라는 것을 알려주는 건데, 셀프가 없으면 몰라
 #근데 몰라도 뭐 클래스로 직접 접근하면 호출은 되지
 SelfTest.function1()
+print("selfTest.functiono1()")
+# self_test.function1()
+# 반대로 인스턴스 객체는 클래스 함수 호출을 못하나봐
 # SelfTest.function2() #이건 Instance Method라서 여기서 호출이 안됨.
 
 
@@ -62,7 +67,7 @@ class WareHouse:
   stock_num = 0
   def __init__(self, name):
     self.name = name
-    WareHouse.stock_num+=1
+    WareHouse.stock_num+=1 #Class변수는 Class변수대로 카운팅 되고 있네
   def __del__(self): #인스턴스 종료될때 호출되는 Method
     WareHouse.stock_num-=1
 
@@ -83,10 +88,11 @@ print(user2.name)
 print(user3.name)
 
 #class 변수 접근 가능. 자기의 네임스페이스에 없으면, Class 네임스페이스로 가서 찾음.
+#근데 class method에는 접근을 못하더라.
 print(user1.stock_num)
 
 
 
 
 #
-defl user1 # class 삭제 가능
+del user1 # class 삭제 가능

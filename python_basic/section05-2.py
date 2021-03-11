@@ -91,7 +91,7 @@ for v in lt:
   if type(v) is float:
     continue
   print(type(v))
-ㅋㅋㅌ₩
+
 
 
 

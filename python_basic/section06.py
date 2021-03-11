@@ -45,7 +45,7 @@ print(lt)
 #매개변수에 따라서 함수의 작동을 달리 함. 튜플형태로 넘어옴
 def args_function_1(*args): #enumerate는 인덱스를 생성해서 돌려줌
     print(args)
-
+print("args_function_1")
 args_function_1('Son')
 args_function_1('Kim', 'Son', 'Park')
 
@@ -53,7 +53,7 @@ args_function_1('Kim', 'Son', 'Park')
 
 def args_function(*args):
   for i, t in enumerate(args): #enumerate는 인덱스를 생성해서 돌려줌
-    print(t)
+    print(i, '번째는', t)
 
 args_function('Son')
 args_function('Kim', 'Son', 'Park')
@@ -71,7 +71,7 @@ def kwargs_function(**kwargs):
     print(k, v)
 
 kwargs_function(name1 = 'SON', name2 = 'KIM', name3='PARK')
-
+# kwargs_function('SON', 'KIM', 'YOON') ERROR Becasue there are no key.
 
 #conversion
 
@@ -94,7 +94,8 @@ def nested_func(num):
 nested_func(10000)
 
 
-#예제 6 hint!
+#예제 6 hint! #:int는 들어올 객체를 미리 hint 주는 것. -> list는 나가는 값에 대한 힌트주는 것.
+#only for 가독성
 def func_mul3(x: int) -> list:
   y1 = x*100
   y2 = x*200
@@ -123,7 +124,7 @@ print(var_function(10))
 lambda_mul_10 = lambda num : num*10 #num이라는 input을 받아서, x*10이라는 아웃풋을 뱉어
 print('lambda >>>>>>', lambda_mul_10(10))
 
-def func_final(x, y, func):
+def func_final(x, y, func):ㄴ
   print(x*y*func(10))
 
 func_final(10, 10, lambda_mul_10)
