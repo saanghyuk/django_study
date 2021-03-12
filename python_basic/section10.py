@@ -31,7 +31,7 @@ x=[10, 20, 30]
 #4.KeyError
 dic = {'Name': 'Son', 'Age' :29, 'City': 'Incheon'}
 #print(dic['hobby'])
-print(dic.get('hobby'))
+print(dic.get('hobby'))  #dict쓸때는 get()함수를 쓸 것.
 
 #5.Attribute Error: 모듈, 클래스의 잘못된 속성 사용시의 예외
 import time

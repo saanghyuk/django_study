@@ -8,9 +8,13 @@ import csv
 #example1
 with open('./resource/sample1.csv', 'r', encoding='utf-8') as f:
   reader = csv.reader(f)
+  print("============print(reader)===============")
   print(reader)
+  print("============next(reader)===============")
   next(reader) # skip header
+  print("============print(dir(reader))===============")
   print(dir(reader))
+  print("==========for=============")
   for c in reader:
     print(c)
 
@@ -24,8 +28,10 @@ with open('./resource/sample2.csv', 'r', encoding='utf-8') as f:
     print(c)
 
 #example3, Dic Convert
+print("=======example3=======")
 with open('./resource/sample1.csv', 'r', encoding='utf-8') as f:
   reader = csv.DictReader(f)
+  print(reader)
   for c in reader:
     for k, v in c.items():
       print(k, v)
@@ -40,6 +46,7 @@ with open('./resource/sample3.csv', 'w', newline='') as f:
   wt = csv.writer(f)
 
   for v in w:
+    print(v)
     wt.writerow(v)
 
 
