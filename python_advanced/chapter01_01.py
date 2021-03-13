@@ -85,3 +85,54 @@ print(students_dicts)
 print()
 print()
 
+#Class-bases
+#Structure
+#구조 설계 후 재사용성 증가, 코드 반복 최소화, 메소드 활용
+#모든 클래스는 Object클래스를 상속함.
+#Default인지라, class Student(object), class Student(), class Student: 이거 다 가능.
+class Student(object):
+  def __init__(self, name, number, grade, details):
+    self._name=name
+    self._number=number
+    self._grade=grade
+    self._details=details
+
+  def __str__(self):
+    return 'str :  {} - {}'.format(self._name, self._number)
+
+  def __repr__(self):
+    return 'repr :  {} - {}'.format(self._name, self._number)
+
+student1 = Student('SON', 1, 1, {'gender':'Male', 'score1': 95, 'score2' : 88})
+student2 = Student('KIM', 2, 2, {'gender':'Femail', 'score1': 77, 'score2' : 92})
+student3 = Student('Park', 3, 4, {'gender':'Male', 'score1': 99, 'score2' : 100})
+
+#__dict__를 쓰면 이 파이썬의 모든 객체가 다 보임.
+print("__dict__")
+print(student1.__dict__)
+print(student2.__dict__)
+print(student3.__dict__)
+
+#리스트
+students_list = []
+students_list.append(student1)
+students_list.append(student2)
+students_list.append(student3)
+
+print()
+#Instance객체가 들어가 있음.
+print(students_list)
+
+
+#__str__함수가 print(객체)하면 뭐가 나오게 할지를 return값에 넣는거야.
+#__str__함수에 따로 return 지정 안해놓으면 반복문 돌면서 그냥 객체 번호만 return함
+#__repr__과 __str__이 동시에 있을 때는 str을 호출함. 그런데 str이 없고 print 찍어보면, repr이 호출됨.
+#추후 이 둘의 차이에 대해 나옴(Chapter 5).
+for x in students_list:
+  print(x)
+  #repr로 강제로 호출
+  print(repr(x))
+
+
+
+
