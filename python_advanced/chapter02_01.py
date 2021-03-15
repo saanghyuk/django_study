@@ -63,3 +63,72 @@ print(p5)
 
 print()
 print()
+
+# 사용
+#index로도 사용 가능.
+print('EX3-1 -> ', p1[0]+p1[1]) # Index Error 주의
+print('EX3-1 -> ', p1.x+p1.y) # class 변수 접근 방식
+
+x, y = p3
+print(x, y, x+y)
+
+#Rename 테스트
+print('EX3-4-', p4)
+print()
+print()
+
+
+#네임드 튜플 메소드
+temp = [52, 38]
+
+# _make(): 새로운 객체를 생성
+# list to named tuple
+p4 = Point1._make(temp)
+print('EX4-1-', p4)
+
+
+# _fields : 필드네임확인
+print('EX4-2-', p1._fields, p2._fields, p3._fields)
+
+
+
+# _asdict():  OrderedDict로 반환
+print('EX4-2 - ', p1._asdict(), p4._asdict())
+print(dict(p1._asdict()))
+
+# _replace() 근데 튜플은 불변이라서 새로운 수정된 객체를 반환(id값이 달라짐)
+print('EX4-4 - ', p2._replace(y=100))
+print(id(p2))
+print(id(p2._replace(y=100)))
+print()
+print()
+
+# 실 사용 실습
+# 학생 전체 그룹 생성
+# 반 20명, 4개의 반 -> (A, B, C, D)
+# 한 반에 20명
+
+# 네임드 튜플 선언
+Classes = namedtuple('Classes', ['rank', 'number'])
+# 그룹 리스트 선언
+numbers = [str(n) for n in range(1, 21)]
+
+ranks = 'A B C D'.split()
+print(ranks, numbers)
+print()
+# List Comoprehension
+students = [Classes(rank, number) for rank in ranks for number in numbers]
+print('EX5-1 - ', len(students))
+print('EX5-2 - ', students)
+print('EX5-3 - ', students[4].rank)
+print()
+print()
+
+# 가독성 안좋은 케이스, LIST COMPREHENSION 너무 길면 가독성이 안좋아짐.
+students2 = [Classes(rank, number) for rank in 'A B C D'.split() for number in [str(n) for n in range(1, 21)]]
+print('EX6-1 -', len(students2))
+print('EX6-1 -', students2)
+
+# 출력
+for s in students:
+  print('EX7-1 - ', s)
