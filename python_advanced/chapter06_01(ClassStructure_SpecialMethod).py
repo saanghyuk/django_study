@@ -19,9 +19,6 @@ class VectorP_sample(object):
 v_sample = VectorP_sample(20, 40)
 #  print('EX1-1', v.__x, v.__y ) 파이썬에서 밑줄 두개를 놓으면, 감춰버림. error터짐.
 
-# Iter확인. 그대로 돌리면 Generator에서 하나씩 풀리겠지.
-for val in v_sample:
-  print('EX1-2', val)
 
 
 # _x라고 해놨어. 그리고 생성할때, y가 40보다 큰지 init에서 체크한다음에 self에 넣었어.
@@ -37,8 +34,8 @@ for val in v_sample:
 
 class VectorP(object):
   def __init__(self, x, y):
-    self.__x = float(x)
-    self.__y = float(y)
+    self.__x = x
+    self.__y = y
 
   def __iter__(self):
     # 아래 쓴거는 generator야. next호출 하면 x, 그 다음 호출하면 y가 나오라는 뜻.
@@ -69,6 +66,9 @@ class VectorP(object):
       raise ValueError('30 Below is not possible')
     self.__y = float(v)
 
+
+# Getter, Setter
+
 v = VectorP(20, 40)
 # print(v.__x) # 접근 불가
 print(v.x) # 접근 가능해짐. 우리는 __로 정의했는데, 접근 가능해짐
@@ -79,3 +79,15 @@ print(v.y)
 # v.y = 20 Error
 v.y = 40
 print(v.y)
+
+print('EX1-2 -', dir(v), v.__dict__) # ['_VectorP__x', '_VectorP__y', 'x', 'y'] 알아서 이렇게 만들어져 있음.
+# dict찍어보면 실제로 변수는 이렇게 저장되어 있는 것을 알 수 있음. 다만, 파이썬에서 자동으로 x로 호출 가능하게 해준거지.
+print(v._VectorP__x)
+print(v._VectorP__y)
+print('EX1-3 - ', v.x, v.y)
+# Iter확인. 그대로 돌리면 Generator에서 하나씩 풀리겠지.
+for val in v_sample:
+  print('EX1-4', val)
+
+
+
