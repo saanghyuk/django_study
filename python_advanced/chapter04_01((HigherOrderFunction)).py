@@ -135,6 +135,7 @@ print()
 
 # partial  사용법 : 인수 고정 -> 주로 특정 인수 고정 후 콜백 함수에 사용하는 함수
 # 하나 이상의 인수가 이미 할당된 함수의 새 버전 반환
+
 from operator import mul
 from functools import partial
 

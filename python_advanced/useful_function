@@ -1,0 +1,27 @@
+
+1. dis(func_v3) -> 실행 과정을 보여줌 아래와 같이 나옴.
+ 29           0 LOAD_GLOBAL              0 (print)
+              2 LOAD_FAST                0 (a)
+              4 CALL_FUNCTION            1
+              6 POP_TOP
+
+ 30           8 LOAD_GLOBAL              0 (print)
+             10 LOAD_FAST                1 (b)
+             12 CALL_FUNCTION            1
+             14 POP_TOP
+
+ 31          16 LOAD_CONST               1 (5)
+             18 STORE_FAST               1 (b)
+             20 LOAD_CONST               0 (None)
+             22 RETURN_VALUE
+None
+
+2. free variable(closure) 확인
+func.__closure__ 형태로 자유 변수에 해당하는 객체들을 확인할 수 있고,
+func.__code__.co_freevars 를 통해 자유 변수들의 이름을 확인할 수 있다.
+
+
+3.
+print('EX2-1 -', id(x), id(y)) # id값 같음. 얕은 복사
+print('EX2-2 -', x==y) #값이 같냐?
+print('EX2-3 -', x is y) # id가 같냐?
