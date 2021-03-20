@@ -213,6 +213,8 @@ print('EX4-5 -', i2[4])
 print('EX4-6 -', i2[4:10]) # [idx] 제거 후
 print('EX4-7 -', 3 in i2[1:10]) # contain을 파이썬이 알아서 만든 것.
 
+print()
+print()
 
 # 우리가 직접 abc를 만들어 보자.
 # 부모는 뽑기 기계
@@ -223,6 +225,58 @@ import abc
 class RandomMachine(abc.ABC): # metaclass=abc.ABCMeta(python 3.4 이하)
 
   #  추상 메서드
+  @abc.abstractmethod
+  def load(self, iterobj):
+    '''Iterable 항목 추가'''
 
+  # 추상 메소드
+  @abc.abstractmethod
+  def pick(self, iterobj):
+    '''무작위 항복 뽑기'''
 
+  # 자식에서 그냥 호출할 수 있는 메서드
+  def inspect(self):
+    items = []
+    while True:
+      try:
+        items.append(self.pick())
+      except LookupError:
+        break
+
+      return tuple(sorted(items))
+
+import random
+
+class CraneMachine(RandomMachine):
+    def __init__(self, items):
+        self._randomizer = random.SystemRandom()
+        self._items = []
+        self.load(items)
+
+    def load(self, items):
+        self._items.extend(items)
+        self._randomizer.shuffle(self._items)
+
+    def pick(self):
+        try:
+            return self._items.pop()
+        except IndexError:
+            raise LookupError('Empty Crane Box.')
+
+    def __call__(self):
+        return self.pick()  # 서브클래스 확인
+
+# 서브 클래스 확인
+print('EX5-1 -', issubclass(RandomMachine, CraneMachine))
+print('EX5-2 -', issubclass(CraneMachine, RandomMachine))
+
+# 상속 구조 확인
+print('EX5-3 -', CraneMachine.__mro__)
+
+cm = CraneMachine(range(1, 100)) #추상 메소드 구현 안하면 에러
+
+print('EX5-4 -', cm._items)
+print('EX5-5 -', cm.pick())
+print('EX5-6 -', cm()) # callable
+print('EX5-7 -', cm.inspect()) # inspect 부모꺼가 실행되겠지.
 

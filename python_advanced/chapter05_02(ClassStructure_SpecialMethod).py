@@ -90,4 +90,193 @@ for val in v_sample:
   print('EX1-4', val)
 
 
+# __slot__
+# 파이썬 인터프리터에게 통보하는 역할
+# 해당 클래스가 가지는 속성을 제한함.
+# 파이썬의 모든 인스턴스는 속성을 가지고, __dict__로 dictionary형태로 관리됨.
+# 근데 이 dict는 빠른 검색을 위해서 hash값으로 관리되기 때문에, 메모리를 많이 잡아먹음.
+# 클래스를 100개 1000개 씩 하면, 그 만큼 딕셔너리가 생성되는 것.
+# 그래서 slot을 사용해서 __dict__속성 최적화 -> 다수 객체 생성 시 메모리 사용 공간 대폭 감소.
+# 해당 클래스에 만들어진 인스턴스 속성 관리에 딕셔너리 대신 set 형태 사용.
+
+
+# Data Science에서 많은 데이터를 사용하는 경우 거의 90% 이상 slots를 사용함.
+class TestA(object):
+  __slots__=('a')
+
+class TestB(object):
+  pass
+
+use_slot=TestA()
+no_slot=TestB()
+
+print('EX2-1 -', use_slot)
+# print('EX2-2 -', use_slot.__dict__) dictionary 안써서 에러 남ㅁ.
+print('EX2-1 -', no_slot)
+print('EX2-2 -', no_slot.__dict__)
+
+# 메모리 사용량 비교. 20%씩 차이가 남.
+import timeit
+
+#측정을 위한 함수 선언
+def repeat_outer(obj):
+  # 얘도 클로저야 obj.a가 밖에서 계속 저장되겠지.
+  def repeat_inner():
+    obj.a = 'Test'
+    del obj.a
+
+  return repeat_inner
+
+print(min(timeit.repeat(repeat_outer(use_slot), number=100000)))
+print(min(timeit.repeat(repeat_outer(no_slot), number=100000)))
+
+
+print()
+print()
+
+# 객체 슬라이싱
+class Objects:
+  def __init__(self):
+    self._numbers = [n for n in range(1, 10000, 3)]
+
+  # 파이썬에에 있는 len을 오버라이딩
+  def __len__(self):
+    return len(self._numbers)
+
+  def __getitem__(self, idx):
+    return self._numbers[idx]
+
+s = Objects()
+# print('EX3-1- ', s.__dict__)
+print('EX3-2 - ', len(s)) # 위에서 __len__을 안해놨으면 error가 남. 실제로 확인해보면 len이 없어.
+
+# 파이썬의 list class를 까보면 실제로 __len__과 __getitem__이 저렇게 되어 있음.
+# 리스트에서 제공하는 것들중 두가지를 오바리이딩 했기 때문에, 이제부터 s[:100], s[3]이런게 가능한 거임.
+print('EX3-3 -  ', len(s._numbers)) # 이렇게 했어야겠지.
+print('EX3-4 - ', s[:100])
+print('EX3-5 - ', s[-1])
+print('EX3-6 - ', s[::10])
+
+print()
+print()
+
+
+# 파이썬 추상 클래스(ABC)
+# 참고: https://docs.python.org/3/library/collections.abc.html
+# 여기 꼭 참고하기! ABC를 쓰려면, 뭘 구현하라고 abstract method에 나와 있는 것.
+
+# 추상클래스를 사용하는 이유
+# 자체적으로 객체 생성 불가
+# 상속을 통해서 자식 클래스에서 인스턴스를 생성해야 함.
+# 공통된 내용(필드, 메소드) 추출 및 통합해서 공통된 내용으로 작성하게 하는 것.
+
+# 폰 -> 걸다, 끊다, 배터리 충전. 이런거는 매우 필수적인거잖아.
+# 이렇게 해놓고 아래서 공통적인거를 다 상속받게 하는거야. 갤럭시 s9, v30이런거를 상속받게 하면서 + 특수한 메소드를 추가시키는 것.
+
+
+
+# Sequence 상속 받지 않았지만, 자동으로 __iter__, __contain__(in 동작시키는 메서드) 기능 작동시키는 경우
+# 파이썬이 __getitem__보고 알아서 iter, contain을 만들어 주는 것.
+# 객체 전체를 자동으로 조사해서 -> 시퀀스 프로토콜 작동시킴
+
+class IterTestA():
+    def __getitem__(self, idx):
+        return range(1, 50, 2)[idx] # range(1, 50, 2)
+
+
+i1 = IterTestA()
+
+print('EX4-1 -', i1[4])
+print('EX4-2 -', i1[4]) # [idx] 제거 후
+print('EX4-3 -', 3 in i1[1:10]) # contain을 파이썬이 알아서 만든 것.
+# print('EX4-4 -', [i for i in i1[:]]) # iter을 파이썬이 알아서 만든 것.
+# print('EX4-5 - ', len(i1) ) # 자동으로 안만들어 주네.
+
+print()
+print()
+
+# Sequence 상속
+# 요구사항인 추상메소드를 모두 구현해야 동작
+# 독스(https://docs.python.org/ko/3/library/collections.abc.html#collections.abc.Reversible)에 있는 표 제일 왼쪽 abc가 추상클래스 이름이고,
+# 그 클래스를 상속을 받는 순간 조건 '추상메서드'를 FM대로 구현해야 함.
+from collections.abc import Sequence
+
+class IterTestB(Sequence):
+    def __getitem__(self, idx):
+        return range(1, 50, 2)[idx] # range(1, 50, 2)
+
+    def __len__(self, idx):
+      return len(range(1, 50, 2)[idx])
+i2 = IterTestB() # TypeError: Can't instantiate abstract class IterTestB with abstract methods __len__
+
+print('EX4-5 -', i2[4])
+print('EX4-6 -', i2[4:10]) # [idx] 제거 후
+print('EX4-7 -', 3 in i2[1:10]) # contain을 파이썬이 알아서 만든 것.
+
+print()
+print()
+
+# 우리가 직접 abc를 만들어 보자.
+# 부모는 뽑기 기계
+# 자식은 인형뽑기, 음식 뽑기 등등
+
+import abc
+
+class RandomMachine(abc.ABC): # metaclass=abc.ABCMeta(python 3.4 이하)
+
+  #  추상 메서드
+  @abc.abstractmethod
+  def load(self, iterobj):
+    '''Iterable 항목 추가'''
+
+  # 추상 메소드
+  @abc.abstractmethod
+  def pick(self, iterobj):
+    '''무작위 항복 뽑기'''
+
+  # 자식에서 그냥 호출할 수 있는 메서드
+  def inspect(self):
+    items = []
+    while True:
+      try:
+        items.append(self.pick())
+      except LookupError:
+        break
+
+      return tuple(sorted(items))
+
+import random
+
+class CraneMachine(RandomMachine):
+    def __init__(self, items):
+        self._randomizer = random.SystemRandom()
+        self._items = []
+        self.load(items)
+
+    def load(self, items):
+        self._items.extend(items)
+        self._randomizer.shuffle(self._items)
+
+    def pick(self):
+        try:
+            return self._items.pop()
+        except IndexError:
+            raise LookupError('Empty Crane Box.')
+
+    def __call__(self):
+        return self.pick()  # 서브클래스 확인
+
+# 서브 클래스 확인
+print('EX5-1 -', issubclass(RandomMachine, CraneMachine))
+print('EX5-2 -', issubclass(CraneMachine, RandomMachine))
+
+# 상속 구조 확인
+print('EX5-3 -', CraneMachine.__mro__)
+
+cm = CraneMachine(range(1, 100)) #추상 메소드 구현 안하면 에러
+
+print('EX5-4 -', cm._items)
+print('EX5-5 -', cm.pick())
+print('EX5-6 -', cm()) # callable
+print('EX5-7 -', cm.inspect()) # inspect 부모꺼가 실행되겠지.
 
