@@ -30,3 +30,19 @@ print('EX2-3 -', x is y) # id가 같냐?
 https://m.blog.naver.com/tjgml1343/222039870724
 dir은 객체가 가진 속성과 메소드 정보를 나열
 dict는 객체가 가진 속성과 그 속성의 내용까지 나열
+
+5. iterable -> for을 쓸 수 있는 객체. iterator -> next를 쓸 수 있는 객체
+iterator은 iterable.
+그리고, 이 iterator를 생성해주는 함수가 Generator.
+함수나 객체 내부에 yield가 있으면, generator객체라고 찍힘.
+class자체를 iterator로 만들어 주고 싶으면
+class WordSplitGenerator:
+  def __init__(self, text):
+    self._text = text.split(' ')
+
+  def __iter__(self):
+    for word in self._text:
+      yield word #  Generator, 이게 next에서 코드 썻던거 다 해주는 거야.
+    return
+이런식으로 __iter__에다가 yield를 써주면 됨.
+그리고 iter(class) 를 해주면, generator객체라고 type이 찍힘.
