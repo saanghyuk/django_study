@@ -1,19 +1,18 @@
-# ThreadPooolExecutor(파일 IO까지 싹다) -> 20초 걸림
+# 파일 IO과정만 따로 분리해서 실행시키고,
+# 이후에 그걸 가지고 멀티스레드에서 활용시키는 방식
 
 # Chapter06-03-02
 # Future 동시성
 # 비동기 작업 실행
 
+
+
 # 지연시간(Block) CPU 및 리소스 낭비 방지. -> Network I/O 관련 작업 동시성 활용 권장함
 # 인터넷에 요청하고 리스폰스 하고, 그런 경우에서 이런 블록에 딱 걸리면 모든게 다 멈춤('블록 걸렸다' 라고 말함)
 
-# 싱글 스레드 보다 더 오래 걸리네. 이래서 File/Network IO 등에서는 멀티스레드를 권장하지만, 이런데서는 더 느림
-# 한번에 natioons.csv로 파일 달라고 접근을 막 해서, OS에서 context switching cost가 일어난 것.
-# GIL때문에 하나의 스레드만 실행할 수 있게 자체적으로 LOCK이 걸린 것.
-# 결국 resource.csv로 다같이 접근해서 딱 줄 슨 시간이 순차진행보다 오래 걸린 거야.
-# 그래서 파일을 읽고 쓰는 작업을 할 때는, 멀티프로세싱으로 하면 조금 더 빠름.
+
 # 이런 경우는 파일을 읽는 작업을 하나로 따로 분리를 해서 이미 분리를 해놓고, 9개의 스레드로 따로 작업을 시키면 훨씬 빠른 속도가 나옴.
-# 파이썬 GIL을 우회하는 방법이 있음. 멀티프로세싱 모듈로 바꾸면 됨.
+# 그러면 어떻게 나오는지 실험.
 
 
 
@@ -24,6 +23,7 @@ import time
 import sys
 import csv
 from concurrent import futures
+import pandas as pd
 # concurrent.futures 방법1(ThreadPoolExcuter라는 것을 사용해 보자, ProcessPoolExecuter 활용)
 # map()
 # 서로 다른 스레드 또는 프로세스에서 실행 가능.
@@ -57,6 +57,12 @@ def save_csv(data, filename):
         for row in data:
             writer.writerow(row)
 
+# def get_csv(file, nation_list):
+#     with open(file, 'r') as f:
+#         reader = csv.DictReader(f)
+#         for r in reader:
+
+#             for i in len(nation_list):
 
 
 # 국가별 분리
@@ -92,7 +98,7 @@ def separate_many(nt):
     # 파일 저장
     save_csv(data, nt.lower() + '.csv')
 
-    return len(nt_list)
+    return len(nt)
 
 
 # 시간 측정 및 메인함수
@@ -113,9 +119,33 @@ def main(separate_many):
     print(msg.format(list(result_cnt), end_tm))
 
 
+def test(nt):
+    with open(TARGET_CSV, 'r') as f:
+        reader = csv.DictReader(f)
+        # Dict을 리스트로 적재
+        data = []
+        # Header 확인
+        # print(reader.fieldnames)
+        print(reader)
+        for r in reader:
+            pass
+            # OrderedDict 확인
+            # print(r)
+            # 조건에 맞는 국가만 삽입
+            # print(r)
+    return data
+
+
 # 실행
 if __name__ == '__main__':
-    main(separate_many)
+    # get_csv(TARGET_CSV)
+    # main(separate_many)
+    test()
+
+# 국가별 분리
+def test():
+    df = pd.read_csv('/resources/nations.csv')
+    print(head(df))
 
     # 지금 보면 3만건의 데이터를 7번을 읽고 쓰고 한거야.
     # 국가마다 읽고 쓰고를 IO작업을 하는 것.

@@ -1,3 +1,5 @@
+# just use single thread with function => 17s
+
 # Chapter06-3-1
 # Future 동시성
 # 비동기 작업 실행

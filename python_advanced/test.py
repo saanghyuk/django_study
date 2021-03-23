@@ -5,6 +5,17 @@
 # 지연시간(Block) CPU 및 리소스 낭비 방지. -> Network I/O 관련 작업 동시성 활용 권장함
 # 인터넷에 요청하고 리스폰스 하고, 그런 경우에서 이런 블록에 딱 걸리면 모든게 다 멈춤('블록 걸렸다' 라고 말함)
 
+# 싱글 스레드 보다 더 오래 걸리네. 이래서 File/Network IO 등에서는 멀티스레드를 권장하지만, 이런데서는 더 느림
+# 한번에 natioons.csv로 파일 달라고 접근을 막 해서, OS에서 context switching cost가 일어난 것.
+# GIL때문에 하나의 스레드만 실행할 수 있게 자체적으로 LOCK이 걸린 것.
+# 결국 resource.csv로 다같이 접근해서 딱 줄 슨 시간이 순차진행보다 오래 걸린 거야.
+# 그래서 파일을 읽고 쓰는 작업을 할 때는, 멀티프로세싱으로 하면 조금 더 빠름.
+# 이런 경우는 파일을 읽는 작업을 하나로 따로 분리를 해서 이미 분리를 해놓고, 9개의 스레드로 따로 작업을 시키면 훨씬 빠른 속도가 나옴.
+# 파이썬 GIL을 우회하는 방법이 있음. 멀티프로세싱 모듈로 바꾸면 됨.
+
+ThreadPoolExcuter
+Thread
+
 # 실습 대상 3가지 경우
 
 import os
@@ -80,7 +91,7 @@ def separate_many(nt):
     # 파일 저장
     save_csv(data, nt.lower() + '.csv')
 
-    return len(nt_list)
+    return len(nt)
 
 
 # 시간 측정 및 메인함수
@@ -89,7 +100,10 @@ def main(separate_many):
     # 시작 시간
     start_tm = time.time()
     # 결과 건수
-    with futures.ThreadPoolExecutor(worker) as executer:
+    # ThreadPoolExecutor: GIL 종속
+    # ProcessPoolExecutor : GIL 우회, 변경 후 -> os.cpu_count()를 알아서 실행시키는 것. 4초 컷
+    # with futures.ThreadPoolExecutor(worker) as executer: # 시간은 걸릴지언정 CPU는 이용을 많이 안함.
+    with futures.ProcessPoolExecutor(worker) as executer: # 극단적으로 CPU 사용량이 올라감.
       result_cnt = executer.map(separate_many, sorted(NATION_LS))
       # map -> 작업 순서 유지, 즉시 실행, 갯수만큼 map에 동시에 풀리는 것. 리스트의 갯수만큼 실행됨.
       # 위에 separate_many에서 for문 없애줘야함.
@@ -98,7 +112,7 @@ def main(separate_many):
 
     msg = '\n{} csv separated in {:.2f}s'
     # 최종 결과 출력
-    print(msg.format(result_cnt, end_tm))
+    print(msg.format(list(result_cnt), end_tm))
 
 
 # 실행
