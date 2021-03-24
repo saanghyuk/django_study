@@ -1,21 +1,8 @@
-# 파일 IO과정만 따로 분리해서 실행시키고,
-# 이후에 그걸 가지고 멀티스레드에서 활용시키는 방식
-
-# Chapter06-03-02
-# Future 동시성
-# 비동기 작업 실행
-
-
-
-# 지연시간(Block) CPU 및 리소스 낭비 방지. -> Network I/O 관련 작업 동시성 활용 권장함
-# 인터넷에 요청하고 리스폰스 하고, 그런 경우에서 이런 블록에 딱 걸리면 모든게 다 멈춤('블록 걸렸다' 라고 말함)
-
-
-# 이런 경우는 파일을 읽는 작업을 하나로 따로 분리를 해서 이미 분리를 해놓고, 9개의 스레드로 따로 작업을 시키면 훨씬 빠른 속도가 나옴.
-# 그러면 어떻게 나오는지 실험.
-
-
-
+# with futures.ThreadPoolExecutor(worker) as executer:
+      # result_cnt = executer.map(separate_many, sorted(NATION_LS))
+# 여기서 근데 map에 하나씩 대응될때마다, 상태를 알 수가 없잖아.
+# 어떤 거는 예외가 발생할 수도 있고, 무슨 문제가 있을 수도 있어.
+# Reference : https://medium.com/humanscape-tech/%ED%8C%8C%EC%9D%B4%EC%8D%AC%EC%9D%98-future-%ED%81%B4%EB%9E%98%EC%8A%A4-8b6bc15bd6af
 # 실습 대상 3가지 경우
 
 import os
@@ -23,8 +10,7 @@ import time
 import sys
 import csv
 from concurrent import futures
-import pandas as pd
-# concurrent.futures 방법1(ThreadPoolExcuter라는 것을 사용해 보자, ProcessPoolExecuter 활용)
+# concurrent.futures 방법1(ThreadPoolExcuter[멀티쓰레드] 라는 것을 사용해 보자, ProcessPoolExecuter[멀티프로세서] 활용)
 # map()
 # 서로 다른 스레드 또는 프로세스에서 실행 가능.
 # 내부 과정에서 알 필요 없으며, 고수준으로 인터페이스 제공
@@ -57,12 +43,6 @@ def save_csv(data, filename):
         for row in data:
             writer.writerow(row)
 
-# def get_csv(file, nation_list):
-#     with open(file, 'r') as f:
-#         reader = csv.DictReader(f)
-#         for r in reader:
-
-#             for i in len(nation_list):
 
 
 # 국가별 분리
@@ -94,11 +74,11 @@ def separate_many(nt):
     # 분리 데이터
     data = get_sales_data(nt)
     # 상황 출력
-    show(nt)
+    # show(nt) 임시 주석
     # 파일 저장
     save_csv(data, nt.lower() + '.csv')
 
-    return len(nt)
+    return nt
 
 
 # 시간 측정 및 메인함수
@@ -106,46 +86,43 @@ def main(separate_many):
     worker = min(20, len(NATION_LS))
     # 시작 시간
     start_tm = time.time()
+
+    # futures
+    futures_list = []
     # 결과 건수
     with futures.ThreadPoolExecutor(worker) as executer:
-      result_cnt = executer.map(separate_many, sorted(NATION_LS))
-      # map -> 작업 순서 유지, 즉시 실행, 갯수만큼 map에 동시에 풀리는 것. 리스트의 갯수만큼 실행됨.
-      # 위에 separate_many에서 for문 없애줘야함.
-    # 종료 시간
+        # Submit -> Callable 객체 스케쥴링(실행 예약) -> 이후 Future로 반환
+        # 일을 스케쥴링 하고, 아래에서 일한 결과들을 받아볼 수 있게 만든 것.
+        # future는 result()각각의 결과값, done()각 일꾼이 잘 마무리를 했는지, as_complete() 일 끝난 직원들이 모두 일이 끝날때까지 기다려주는 함수.
+        # map은 그냥 일만 시키는 거고, submit은 이렇게 구체적인 상태를 보고 싶을 때 사용함.
+        for nt in sorted(NATION_LS):
+            # future 반환
+            future = executer.submit(separate_many, nt) # submit은 실행 예약
+            # 스케쥴링
+            futures_list.append(future)
+            # Scheduled for Canada : <Future at 0x7f95a7900048 state=running> 이렇게 일꾼들 다 실행되기 시작함.
+            print('Scheduled for {} : {}'.format(nt, future))
+
+        for future in futures.as_completed(futures_list):
+            result = future.result() # 결과값 위에 separate_many의 return값이 나옴.
+            done = future.done() # 일을 제대로 했는지. True or False
+            cancelled = future.cancelled #취소가 되진 않았는지
+            # print('RESULT : {}'.format(result))
+            # print('DONE : {}'.format(done))
+            print('Future Result : {}, Done: {}'.format(result, done))
+            print('Future Cancelled : {}'.format(cancelled))
+
+    # 종료 시간s
     end_tm = time.time() - start_tm
 
     msg = '\n{} csv separated in {:.2f}s'
     # 최종 결과 출력
-    print(msg.format(list(result_cnt), end_tm))
-
-
-def test(nt):
-    with open(TARGET_CSV, 'r') as f:
-        reader = csv.DictReader(f)
-        # Dict을 리스트로 적재
-        data = []
-        # Header 확인
-        # print(reader.fieldnames)
-        print(reader)
-        for r in reader:
-            pass
-            # OrderedDict 확인
-            # print(r)
-            # 조건에 맞는 국가만 삽입
-            # print(r)
-    return data
+    print(msg.format(list(futures_list), end_tm))
 
 
 # 실행
 if __name__ == '__main__':
-    # get_csv(TARGET_CSV)
-    # main(separate_many)
-    test()
-
-# 국가별 분리
-def test():
-    df = pd.read_csv('/resources/nations.csv')
-    print(head(df))
+    main(separate_many)
 
     # 지금 보면 3만건의 데이터를 7번을 읽고 쓰고 한거야.
     # 국가마다 읽고 쓰고를 IO작업을 하는 것.

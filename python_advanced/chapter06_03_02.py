@@ -1,5 +1,3 @@
-# ThreadPooolExecutor(파일 IO까지 싹다) -> 20초 걸림
-
 # Chapter06-03-02
 # Future 동시성
 # 비동기 작업 실행
@@ -15,7 +13,8 @@
 # 이런 경우는 파일을 읽는 작업을 하나로 따로 분리를 해서 이미 분리를 해놓고, 9개의 스레드로 따로 작업을 시키면 훨씬 빠른 속도가 나옴.
 # 파이썬 GIL을 우회하는 방법이 있음. 멀티프로세싱 모듈로 바꾸면 됨.
 
-
+ThreadPoolExcuter
+Thread
 
 # 실습 대상 3가지 경우
 
@@ -92,7 +91,7 @@ def separate_many(nt):
     # 파일 저장
     save_csv(data, nt.lower() + '.csv')
 
-    return len(nt_list)
+    return len(nt)
 
 
 # 시간 측정 및 메인함수
@@ -101,7 +100,10 @@ def main(separate_many):
     # 시작 시간
     start_tm = time.time()
     # 결과 건수
-    with futures.ThreadPoolExecutor(worker) as executer:
+    # ThreadPoolExecutor: GIL 종속
+    # ProcessPoolExecutor : GIL 우회, 변경 후 -> os.cpu_count()를 알아서 실행시키는 것. 4초 컷
+    # with futures.ThreadPoolExecutor(worker) as executer: # 시간은 걸릴지언정 CPU는 이용을 많이 안함.
+    with futures.ProcessPoolExecutor(worker) as executer: # 극단적으로 CPU 사용량이 올라감.
       result_cnt = executer.map(separate_many, sorted(NATION_LS))
       # map -> 작업 순서 유지, 즉시 실행, 갯수만큼 map에 동시에 풀리는 것. 리스트의 갯수만큼 실행됨.
       # 위에 separate_many에서 for문 없애줘야함.
