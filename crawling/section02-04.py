@@ -20,17 +20,47 @@ def main():
     # 딕셔너리 확인
     # print(urls)
 
+    # 결과 출력
+    for name, url in urls.items():
+      print(name, url)
+
 
 def scrape_news_list_page(response):
+    urls = dict()
     root = fromstring(response.content)
-    #아무것도 안가져옴
-    for a in root.xpath('//div[@class="thumb_area"]/div[@class="thumb_box"]'):
-        print(a)
+    # # 아무것도 안가져옴
+    # for a in root.xpath('//a[text()="기사보기"]'):
+    #     print(a.get('href'))
+    #     # a 문자열 출력
 
-        # a 문자열 출력
+
+
+    # for b in root.xpath('//img[@class="news_logo"]'):
+    #     print(b.get('alt'))
+    #     # a 문자열 출력
+
+    for a in root.xpath('//div[@class="thumb_box _NM_NEWSSTAND_THUMB _NM_NEWSSTAND_THUMB_press_valid"]'):
         # print(tostring(a, pretty_print=True))
+        name, link = extract_contents(a)
+        # print('name', name)
+        # print('link', link)
+        urls[name]= link
 
-    return
+    return urls
+
+
+
+def extract_contents(dom):
+    # dom 구조 확인
+
+    # 신문사 명`
+    name = dom.xpath('./a/img/@alt')[0]
+
+    # 링크 주소
+    link = dom.xpath('./div/a[text()="기사보기"]/@href')[0]
+
+    return name, link
+
 
 
 

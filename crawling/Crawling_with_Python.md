@@ -22,3 +22,15 @@
   - 페이지 구조 변경 가능성 숙지 - 다 짜놨더니 좀 하다가 어느 순간 구조 바뀔 수 있음(요즘은 API를 제공 해줌. 유튜브 같은 곳도 정보를 다 API로 전송을 해줌. 이거를 활용 하면, 서버에 부하를 주지도 않고 좋음). 
 
   - ​
+
+
+
+#### 라이브러리 정리
+
+| 라이브러리     | 역할    | Detail                                                       |
+| -------------- | ------- | ------------------------------------------------------------ |
+| lxml           | parsing | Requests.get 등으로 가져온 response데이터를  root = lxml.html.fromstring(response.content)등으로 인자로 준 후에, .cssselect등으로 찾을 수 있음. |
+| requests       |         | response = requests.get('https://www.naver.com/') # Get, POST 혹은,  session = requests.Session()등으로 데이터를 가져오는 역할 |
+| urllib.request |         | urllib.request.urlretrieve(img_url, save_path1) 등으로 가져온 데이터를 파일로 저장 혹은, respones = urllib.request.urlopen등 데이터 가져와서 저장. |
+|urllib.parse.urlparse||dict 형태로 key:value를 저장해 놓으면, urllib.parse.urlencode(dict)형태로 format=json&password=111 이런식으로 바꿔줘서 parameter로 담아서 보내기 쉽게 만들어줌.|
+
