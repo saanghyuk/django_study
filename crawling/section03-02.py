@@ -35,3 +35,5 @@ for c in params:
     #수신 후 디코딩
     contents = res_data.decode('UTF-8')
     print(contents)
+
+

@@ -33,4 +33,4 @@
 | requests       |         | response = requests.get('https://www.naver.com/') # Get, POST 혹은,  session = requests.Session()등으로 데이터를 가져오는 역할 |
 | urllib.request |         | urllib.request.urlretrieve(img_url, save_path1) 등으로 가져온 데이터를 파일로 저장 혹은, respones = urllib.request.urlopen등 데이터 가져와서 저장. |
 |urllib.parse.urlparse||dict 형태로 key:value를 저장해 놓으면, urllib.parse.urlencode(dict)형태로 format=json&password=111 이런식으로 바꿔줘서 parameter로 담아서 보내기 쉽게 만들어줌.|
-
+|json||json.loads(res)[key 값]을 넣어서 json으로 res가 전달되는 경우 풀어줌|
