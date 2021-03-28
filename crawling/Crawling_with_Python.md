@@ -30,7 +30,46 @@
 | 라이브러리     | 역할    | Detail                                                       |
 | -------------- | ------- | ------------------------------------------------------------ |
 | lxml           | parsing | Requests.get 등으로 가져온 response데이터를  root = lxml.html.fromstring(response.content)등으로 인자로 준 후에, .cssselect등으로 찾을 수 있음. |
-| requests       |         | response = requests.get('https://www.naver.com/') # Get, POST 혹은,  session = requests.Session()등으로 데이터를 가져오는 역할 |
+| requests       |         | response = requests.get('https://www.naver.com/') # Get, POST 혹은,  session = requests.Session()등으로 데이터를 가져오는 역할. |
 | urllib.request |         | urllib.request.urlretrieve(img_url, save_path1) 등으로 가져온 데이터를 파일로 저장 혹은, respones = urllib.request.urlopen등 데이터 가져와서 저장. |
 |urllib.parse.urlparse||dict 형태로 key:value를 저장해 놓으면, urllib.parse.urlencode(dict)형태로 format=json&password=111 이런식으로 바꿔줘서 parameter로 담아서 보내기 쉽게 만들어줌.|
-|json||json.loads(res)[key 값]을 넣어서 json으로 res가 전달되는 경우 풀어줌|
+|json||json.loads(res)[key 값]을 넣어서 json으로 res가 전달되는 경우 풀어줌. 실제로, 상대방이 json형태로 넘겼어도  for line in r.iter_lines(decode_unicode=True):의 type출력해보면, str로 나오는 경우가 많음. 이런 경우 json.loads로 하면 dict형태로 타입이 바뀜. 혹은 **단일 레코드**인 경우 r.json() 그냥 이렇게 해도 됨.   print(r.json().keys()) 혹은 r.json().values() 가능|
+
+
+
+상세 설명
+
+- 서버가 클라이언트를 식별할때, 쿠키를 많이 활용함. 예를 들어, 24시간 동안 이 창을 열지 않음, 로그인 상태 유지 등등. Application > Cooies에서 확인 가능.
+- ​
+
+
+
+
+
+
+
+
+#### Requests
+
+|                       |                                           |
+| --------------------- | ----------------------------------------- |
+| requests.get())       | GET 요청                       |
+| requests.headers | 들어온 headers 정보 확인 |
+| r.text | 들고온 데이터 확인 |
+| r.iter_lines(decode_unicode=True) |들고온 데이터 iter돌리기|
+|r.encoding| 들고온 데이터의 인코딩 확인|
+
+
+
+
+
+
+#### json
+
+|                       |                                           |
+| --------------------- | ----------------------------------------- |
+| json.loads()          | json으로 타입 변경                        |
+| requests.get().json() | 단일 레코드인 경우 json으로 타입 변경해줌 |
+| json.keys()           | json데이터의 key만 return |
+| json.values()|json데이터의 values만 return|
+
