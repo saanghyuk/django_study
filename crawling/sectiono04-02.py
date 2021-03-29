@@ -55,7 +55,7 @@ print(r.text)
 # json변환
 print(r.json())
 print(r.json().keys())
-print(r.json().values())
+print(r.json().values())so
 
 # 인코딩
 print(r.encoding)
