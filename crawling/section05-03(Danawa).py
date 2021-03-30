@@ -14,7 +14,7 @@ login_info = {
     'redirectUrl': 'http://www.danawa.com/',
     'loginMemberType': 'general',
     'id': 'saanghyuk',
-    'password': 'tkdgur001'
+    'password': '****' # 비밀번호 세팅
 }
 
 # Headers 정보

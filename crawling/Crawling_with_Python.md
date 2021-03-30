@@ -153,7 +153,48 @@ p1에서 next_sibling한번 하면 ',\n' 공백부분이 나오는 것.
 
 ### Selenium
 
-요즘은 로그인 등에서, 사용자가 정말 직접 키보드 치고 입력을 했는지, 정상적인 브라우져로 접근 했는지 다 체크함. 동적 랜더링은 할 수가 없음. 
+요즘은 로그인 등에서, 사용자가 정말 직접 키보드 치고 입력을 했는지, 정상적인 브라우져로 접근 했는지 다 체크함. 동적 랜더링은 할 수가 없음. 요즘은 그런데 정말 가끔, 웹브라우져 쓰는 경우 쿠키나 세션까지 보내야되는 경우도 있음. 그런경우 fake_useragent로 보내면 됨. 
 
 - selenium webdriver를 다운받아야 함. https://www.selenium.dev/downloads/
-- 
+
+```
+  # selenium 임포트
+  from selenium import webdriver
+  
+  # webdriver 설정(Chrome, Firefox 등)
+  browser = webdriver.Chrome('./webdriver/chromedriver')
+```
+
+|                                                              |                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| browser.implicitly_wait(5)                                   | 속도가 조금씩 달라서, 웹드라이버 쓸때는 조금씩 타이밍을 주는게 좋음. |
+| browser.set_window_size(1920, 1280)  maximize_window(), minimize_window() | 해당 크기로 브라우저를 열어줌                                |
+| browser.get('https://daum.net')                              | 페이지 이동                                                  |
+| browser.page_source                                          | 페이지 내용 보는 것. 이 상태로 bs4에 넣어서 확인하는 것. 이제부터는 ajax콜까지 싹다 옴. 개발자도구 그대로 긁어옴. |
+| browser.session_id                                           | 세션 값 출력. 브라우저 엔진을 가지고 움직이기 때문에, 세션과 쿠키를 다 가지고 있음. 진짜 브라우져를 가지고 접근하는 것. |
+| browser.title                                                | 페이지 타이틀                                                |
+| browser.current_url                                          | 현재 URL을 가져옴.                                           |
+| browser.get_cookie                                           | 현재 쿠키 정보 출력(개발자도구 -> Application -> 해당 사이트 에 있는 쿠키값) |
+| browser.find_element_by_css_selector("div.inner_search > input.tf_keyword") | css로 태그 찾기                                              |
+| element.send_keys('고려화학매트')                            | 키 입력                                                      |
+| element.submit()                                             | 입력한 키 제출                                               |
+| browser.save_screenshot("./resources/website_ch1.jpg") browser.browser.get_screenshot_as_file("./resources/website_ch2.jpg") | 스크린샷 찍어서 저장                                         |
+| browser.quit()                                               | 브라우저 종료                                                |
+| from selenium.webdriver.chrome.options import Options  chrome_options = Options()                 chrome_options.add_argument("--headless") # 브라우져가 실행되지 않음.    browser = webdriver.Chrome('./webdriver/chromedriver', options=chrome_options) | 브라우져가 실행되지 않음.     헤드리스 옵션                  |
+|                                                              |                                                              |
+|                                                              |                                                              |
+|                                                              |                                                              |
+|                                                              |                                                              |
+|                                                              |                                                              |
+|                                                              |                                                              |
+
+- headless option 
+
+```
+from selenium.webdriver.chrome.options 
+
+import Options  chrome_options = Options()                 
+chrome_options.add_argument("--headless") # 브라우져가 실행되지 않음.    
+browser = webdriver.Chrome('./webdriver/chromedriver', options=chrome_options)
+```
+
