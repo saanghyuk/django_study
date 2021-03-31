@@ -223,3 +223,39 @@ explicit 위의 예에서는 기다리가 되면 바로 클릭함.
 ```
 
   
+
+#### xlsxwriter 엑셀에 쓰는 것을 쉽게 해주는 라이브러리(section06-04.py)
+
+```
+pip install xlsxwriter
+
+import xlsxwriter
+from io import BytesIO
+import urllib.request as req
+
+
+import xlsxwriter
+from io import BytesIO
+
+# 엑셀 처리 선언
+workbook =xlsxwriter.Workbook("./resources/crawling_result.xlsx")
+# 워크시트
+worksheet = workbook.add_worksheet()
+# 엑셀 행 수 
+int_cnt = 1
+
+# 이미지 요청 후 바이트 변환
+img_data = BytesIO(req.urlopen(prod_img_url).read())
+
+# 엑셀 저장(텍스트)
+print('===============variable check===============')
+print(prod_name)
+print('===============variable check===============')
+worksheet.write('A%s' % ins_cnt, prod_name)
+worksheet.write('B%s' % ins_cnt, prod_price)
+
+# 엑셀 저장(이미지)
+worksheet.insert_image('C%s' % ins_cnt, prod_name, {'image_data': img_data})
+
+```
+
