@@ -165,22 +165,23 @@ p1에서 next_sibling한번 하면 ',\n' 공백부분이 나오는 것.
   browser = webdriver.Chrome('./webdriver/chromedriver')
 ```
 
-|                                                              |                                                              |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| method                                                       |                            roles                             |
+| ------------------------------------------------------------ | :----------------------------------------------------------: |
 | browser.implicitly_wait(5)                                   | 속도가 조금씩 달라서, 웹드라이버 쓸때는 조금씩 타이밍을 주는게 좋음. |
-| browser.set_window_size(1920, 1280)  maximize_window(), minimize_window() | 해당 크기로 브라우저를 열어줌                                |
-| browser.get('https://daum.net')                              | 페이지 이동                                                  |
+| from selenium.webdriver.support.ui import WebDriverWait.     |                      **하단 따로 설명**                      |
+| browser.set_window_size(1920, 1280)  maximize_window(), minimize_window() |                해당 크기로 브라우저를 열어줌                 |
+| browser.get('https://daum.net')                              |                         페이지 이동                          |
 | browser.page_source                                          | 페이지 내용 보는 것. 이 상태로 bs4에 넣어서 확인하는 것. 이제부터는 ajax콜까지 싹다 옴. 개발자도구 그대로 긁어옴. |
 | browser.session_id                                           | 세션 값 출력. 브라우저 엔진을 가지고 움직이기 때문에, 세션과 쿠키를 다 가지고 있음. 진짜 브라우져를 가지고 접근하는 것. |
-| browser.title                                                | 페이지 타이틀                                                |
-| browser.current_url                                          | 현재 URL을 가져옴.                                           |
+| browser.title                                                |                        페이지 타이틀                         |
+| browser.current_url                                          |                      현재 URL을 가져옴.                      |
 | browser.get_cookie                                           | 현재 쿠키 정보 출력(개발자도구 -> Application -> 해당 사이트 에 있는 쿠키값) |
-| browser.find_element_by_css_selector("div.inner_search > input.tf_keyword") | css로 태그 찾기                                              |
-| element.send_keys('고려화학매트')                            | 키 입력                                                      |
-| element.submit()                                             | 입력한 키 제출                                               |
-| browser.save_screenshot("./resources/website_ch1.jpg") browser.browser.get_screenshot_as_file("./resources/website_ch2.jpg") | 스크린샷 찍어서 저장                                         |
-| browser.quit()                                               | 브라우저 종료                                                |
-| from selenium.webdriver.chrome.options import Options  chrome_options = Options()                 chrome_options.add_argument("--headless") # 브라우져가 실행되지 않음.    browser = webdriver.Chrome('./webdriver/chromedriver', options=chrome_options) | 브라우져가 실행되지 않음.     헤드리스 옵션                  |
+| browser.find_element_by_css_selector("div.inner_search > input.tf_keyword") |                       css로 태그 찾기                        |
+| element.send_keys('고려화학매트')                            |                           키 입력                            |
+| element.submit()                                             |                        입력한 키 제출                        |
+| browser.save_screenshot("./resources/website_ch1.jpg") browser.browser.get_screenshot_as_file("./resources/website_ch2.jpg") |                     스크린샷 찍어서 저장                     |
+| browser.quit()                                               |                        브라우저 종료                         |
+| from selenium.webdriver.chrome.options import Options  chrome_options = Options()                 chrome_options.add_argument("--headless") # 브라우져가 실행되지 않음.    browser = webdriver.Chrome('./webdriver/chromedriver', options=chrome_options) |         브라우져가 실행되지 않음.     헤드리스 옵션          |
 |                                                              |                                                              |
 |                                                              |                                                              |
 |                                                              |                                                              |
@@ -198,3 +199,27 @@ chrome_options.add_argument("--headless") # 브라우져가 실행되지 않음.
 browser = webdriver.Chrome('./webdriver/chromedriver', options=chrome_options)
 ```
 
+- Explicit wait
+
+```
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+  
+  
+WebDriverWait(browser, 3).until(EC.presence_of_element_located((By.XPATH, '//*[@id="dlMaker_simple"]/dd/div[2]/button[1]'))).click()
+ 
+ 
+  브라우저가 3초간 기다린다. 저  xpath가 브라우저에 나타날 때 까지. 3초 까지 기다린다. 그 전에 나타나면 마우스로 클릭을 해! 3초 넘어갈때까지 안되면 에러를 뱉어!
+  
+  
+참고로
+time.sleep(2)
+browser.find_element_by_xpath('//*[@id="dlMaker_simple"]/dd/div[2]/button[1]').click()
+이렇게 sleep으로 하면 진짜 2초를 기다려. 파이썬 인터프리터 엔진 전체가 멈춤. 
+explicit 위의 예에서는 기다리가 되면 바로 클릭함. 
+  
+  
+```
+
+  
