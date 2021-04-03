@@ -24,4 +24,9 @@ class TestSpider(scrapy.Spider):
 
 
     def parse(self, response):
-        pass
+        #  둘다 가능
+        # xpath일땐?
+        # response.css('nav#mySidenav').xpath('./div//a/text()').extract()
+        for n, text in enumerate(response.css('nav#mySidenav a::text').getall(), 1): # 1번 index부터 시작
+            yield {'num': n, 'learn Title': text}
+
