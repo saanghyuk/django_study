@@ -453,5 +453,133 @@ scrapy genspider testspider scrapinghub.com
       # 본문 내용
       contents = scrapy.Field()
   ```
+
+
+
+### Scrapy Export
+
+- 셋팅을 한번에 해놓고, 계속해서 알아서 저장이 되도록 만들 수 있음. 
+
+- 지금까지는
+
+  ```
+  scrapy crawl test7 -o test7.jl -t jsonlines 
+  이런식이였음. 
   
+  사실 이런 약자였음. 
+  scrapy crawl test7 --output test7.jl -output-format jsonlines 
+  ```
+
+- 출력형식
+
+  - JSON
+- JSNO Lines
+  
+  - CSV
+- XML, Picke, Marshal
+
+- 저장위치
+
+  - Local File System - My PC(Hard Disk)
+  - FTP - Server
+  - S3 - AWS(Amazon)
+  - 기본 콘솔 확인
+
+- 방법 2가지 
+
+  1. 커맨드 이용
+
+     (--output or -o), (--output-format, -t)
+
+     옵션 설정 예) --set=FEED_EXPORT_INDENT = 2(2번 탭키 누른 것처럼 들여쓰기 넣으면서 저장)
+
+  2. **Settings.py** 이용
+
+     한번 설정해놓으면 자동으로 저장(파일형식, 위치 등)
+
+     https://docs.scrapy.org/en/latest/topics/feed-exports.html#feeds
+
+     | todo              | example                  |
+     | ----------------- | ------------------------ |
+     | 파일 이름 및 경로 | FEED_URI = "result.json" |
+     | 파일 형식         |FEED_FORMAT ='json'      |
+     | 출력 인코딩 | FEED_EXPOORT_ENCODING = 'utf-8' |
+     | 기본 들여쓰기 | FEED_EXPORT_INDENT = 2 |
+     |||
+     |||
+
+
+
+### Settings.py
+
+- Scrapy 환경설정
+
+- 실행방법
+
+  1. 커맨드 라인에서 실행
+
+     ```
+     scrapy crawl 크롤러명 -s(=--set) <NAME>=<VALUE>
+     ```
+
+     
+
+  2. Spider 실행 시 직접 지정 - 인자로 뭘 쓰는 것도 없이 그냥 이렇게 선언만 하면 됨. 
+
+     ```
+     Spider Class 내부
+     
+     custom_settings ={
+     	'DOWNLOAD_DELAY': 3
+     }
+     ```
+
+	3. Settings.py에 지정 -> **추천**
+	
+	4. 서브 명령어(신경 X)
+	
+	5. 글로벌 설정 :스파이더에서  scrappy.settings.default_settings을 임포트 해서 동적으로 바꾸면서 쓸때 사용. 많이 쓸일은 없음. 
+
+
+
+|Name|Roles|
+|----|-----|
+|SPIDER_MODULES = ['section04_01.spiders']|스파이더가 어디 있는지. 리스트 형태인 것을 보아, 여러 개를 쓸 수 있음.|
+|NEWSPIDER_MODULE = 'section04_01.spiders'|새로 생성하면 어디로 갈지(추측)|
+|ROBOTSTXT_OBEY = True|타겟사이트 robots.txt 준수 여부. True면 안된다는거 만났을때, 크롤링 멈춤. False면 그냥 함.|
+|CONCURRENT_REQUESTS = 32|병렬 처리. 크롤러 양이 많은 경우, 리퀘스트 32개까지 요청을 해서 요청을 하겠다는 것. 컴퓨터 사양이 좋으면 32로 해도 괜찮음. 주석처리 상태면 16개로 되어 있음.|
+|DOWNLOAD_DELAY = 3|딜레이 주고 요청함. 시간을 늘릴수록 안전하나 느림.|
+|CONCURRENT_REQUESTS_PER_DOMAIN = 16|웹사이트 도메인 동시 병렬 처리 갯수. 16개 사이트를 동시에 할 수 있다.|
+|CONCURRENT_REQUESTS_PER_IP = 16|특정 웹사이트 주소 병렬 처리 갯수(IP로 접근 했을 때)|
+|COOKIES_ENABLED = False|쿠키 활성화 여부. 서버에 따라서 쿠키 있는지 확인하는 곳이 있음. True로 놓으면 자동으로 크롤링 엔진이 쿠키를 생성해서 크롤링 함. 403, 404 같은거 뜨면, 쿠키 True로 하고 작동시켜 보면 좋음.|
+|TELNETCONSOLE_ENABLED = False|원격 할때 씀|
+|DEFAULT_REQUEST_HEADERS = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',   'Accept-Language': 'en' }|기본 리퀘스트 헤더값. 헤더값을 보는 사이트는 여기다가 fake_user_agent 같은 것을 두면 됨.  ** 중요**|
+|\#SPIDER_MIDDLEWARES =|미들웨어 사용 여부|
+|\#DOWNLOADER_MIDDLEWARES =|특정 다운로드 미들웨어 사용|
+|\# Configure item pipelines<br/>ITEM_PIPELINES =|파이프라인 설정|
+|HTTPCACHE_ENABLED = True|캐시 사용 여부|
+|HTTPCACHE_EXPIRATION_SECS = 30|캐시 유효기간(30초마다 캐시를 초기화하겠다.)|
+|HTTPCACHE_DIR = 'httpcache'|캐시의 저장 경로|
+| HTTPCACHE_IGNORE_HTTP_CODES = []                             |응답 거부 캐시. 크롤링을 시도했는데,|
+|HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'|캐시 스토리지|
+- 캐시를 사용하면 동일하게 여러 번 요청시 서버사이드 부하 절감 가능(변동사항 없을 경우)
+
+  캐시 사용하면? 1초 전에 실행하고 또 실행하면 엄청 금방 끝남. 만약, 처음 크롤링 하러 갔다가, 안바뀌었어. 바뀐게 없는데 계속 긁으면 서버 측에도 부담을 줌. 나도 리소스 낭비. 처음에는 가지고 오고, 두번째부터는 캐시를 디짐. 30이면 30초 동안은 캐시를 디짐. 그러다가 30초 지나면, 실질적으로 방문해서 긁음. 캐시 만료를 이 사이트 업데이트 되는 주기 정도로 바꿔놓으면 6000이면 6000초 동안은 캐시를 크롤링 하는거고, 6000초 지나면 그때부터 실질적으로 방문하는 것. 
+
+  다음이나, 네이버메인 이런데는 워낙 자주 바뀌니깐 캐시보다는 다운로드 딜레이를 좀 늘려서 사용하는게 좋음. 
+
+  캐시라는 것을 긁어오는것도 내장되어 있는 캐시 미들웨어가 작동을 하는 것. 
+
+- **오류처리, 자동 재시도 설정(꼭 알아야 되서 따로 빼놓음)**
+
+  | options              | meanings                                                     |
+  | -------------------- | ------------------------------------------------------------ |
+  | RETRY_ENABLED = True | 정기 점검 등에서 잠깐 안될때가 있음. 다시 재시도를 하게 됨.  |
+  | RETRY_TIMES = 2      | 재시도 최대 횟수값. 여기선 최대 2번까지. 그 다음에도 안되면 에러 |
+  | RETRY_HTTP_CODES = [500, 502, 503, 504, 408] | 재시도 대상 http코드. 내가 지정한 http code에서만 재시도 하게 할 수 있음. 나머지는 재시도 안함. |
+|HTTPERROR_ALLOWED_CODES=[404]|오류 무시 HTTP 상태 코드. 404일때는 에러지만 멈추지 않고 무시하고 계속 진행해라.|
+|HTTPERROR_ALLOWED_ALL = True|모든 상태 코드 오류 무시. 이건 사용하면 안됨. 모든 에러가 있어도 개무시하겠다는 것.|
+
+  
+
   
